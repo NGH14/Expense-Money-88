@@ -1,0 +1,52 @@
+package vn.edu.greenwich.cw_1_sample
+
+import android.content.Intent
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import androidx.navigation.ui.NavigationUI.setupWithNavController
+import kotlinx.android.synthetic.main.activity_main.*
+
+class MainActivity : AppCompatActivity(R.layout.activity_main) {
+	private lateinit var appBarConfiguration: AppBarConfiguration
+	private lateinit var navHostFragment: NavHostFragment
+	private lateinit var navController: NavController
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+
+		navHostFragment = main_nav_host.getFragment()
+		navController = navHostFragment.navController
+
+		appBarConfiguration = AppBarConfiguration.Builder(
+			R.id.residentListFragment,
+			R.id.residentRegisterFragment,
+			R.id.aboutUsFragment
+		).build()
+
+		setupWithNavController(main_nav_bottom, navController)
+		setupActionBarWithNavController(this, navController, appBarConfiguration)
+	}
+
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		menuInflater.inflate(R.menu.menu_in_action, menu)
+		return super.onCreateOptionsMenu(menu)
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+		android.R.id.home -> {
+			onBackPressedDispatcher.onBackPressed()
+			true
+		}
+		R.id.setting -> {
+			startActivity(Intent(this, SettingActivity::class.java))
+			true
+		}
+		else -> super.onOptionsItemSelected(item)
+	}
+}
