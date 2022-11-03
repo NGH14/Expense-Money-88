@@ -1,6 +1,5 @@
 package vn.edu.greenwich.cw_1_sample.ui.resident.list
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,12 +26,11 @@ class ResidentAdapter(var _originalList: ArrayList<Resident>) :
 		_filteredList = _originalList
 	}
 
-	@SuppressLint("NotifyDataSetChanged")
 	fun updateList(list: ArrayList<Resident>) {
 		_originalList = list
 		_filteredList = list
 
-		notifyDataSetChanged()
+		notifyItemRangeChanged(0, list.size)
 	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -97,12 +95,13 @@ class ResidentAdapter(var _originalList: ArrayList<Resident>) :
 			return results
 		}
 
-		@Suppress("UNCHECKED_CAST")
-		@SuppressLint("NotifyDataSetChanged")
 		override fun publishResults(constraint: CharSequence, results: FilterResults) {
-			_filteredList = results.values as ArrayList<Resident>
+			(results.values as? Array<*>)
+				?.filterIsInstance<Resident>()
+				?.toMutableList()
+				?.let { _filteredList = ArrayList(it) }
 
-			notifyDataSetChanged()
+			_filteredList?.let { notifyItemRangeChanged(0, it.size) }
 		}
 	}
 }

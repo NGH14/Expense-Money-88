@@ -1,6 +1,5 @@
 package vn.edu.greenwich.cw_1_sample.ui.request.list
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,12 +24,11 @@ class RequestAdapter(list: ArrayList<Request>) :
 		_filteredList = list
 	}
 
-	@SuppressLint("NotifyDataSetChanged")
 	fun updateList(list: ArrayList<Request>) {
 		_originalList = list
 		_filteredList = list
 
-		notifyDataSetChanged()
+		notifyItemRangeChanged(0, list.size)
 	}
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -85,11 +83,13 @@ class RequestAdapter(list: ArrayList<Request>) :
 			return results
 		}
 
-		@Suppress("UNCHECKED_CAST")
-		@SuppressLint("NotifyDataSetChanged")
 		override fun publishResults(constraint: CharSequence, results: FilterResults) {
-			_filteredList = results.values as ArrayList<Request>?
-			notifyDataSetChanged()
+			(results.values as? Array<*>)
+				?.filterIsInstance<Request>()
+				?.toMutableList()
+				?.let { _filteredList = ArrayList(it) }
+
+			_filteredList?.let { notifyItemRangeChanged(0, it.size) }
 		}
 	}
 }

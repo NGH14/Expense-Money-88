@@ -2,9 +2,7 @@ package vn.edu.greenwich.cw_1_sample.ui.request.list
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,12 +21,8 @@ class RequestListFragment : Fragment(R.layout.fragment_request_list) {
 		_db = ResimaDAO(context)
 	}
 
-	override fun onCreateView(
-		inflater: LayoutInflater,
-		container: ViewGroup?,
-		savedInstanceState: Bundle?,
-	): View {
-		val view = inflater.inflate(R.layout.fragment_request_list, container, false)
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 
 		if (arguments != null) {
 			val request = Request()
@@ -46,8 +40,6 @@ class RequestListFragment : Fragment(R.layout.fragment_request_list) {
 
 		// Show "No Request." message.
 		fmRequestListEmptyNotice.visibility = if (_requestList.isEmpty()) View.VISIBLE else View.GONE
-
-		return view
 	}
 
 	companion object {
