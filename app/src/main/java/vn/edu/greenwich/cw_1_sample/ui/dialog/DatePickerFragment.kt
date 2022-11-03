@@ -31,7 +31,9 @@ class DatePickerFragment : DialogFragment(R.layout.fragment_date_picker), OnDate
 			${if (day < 10) "0$day" else day}/
 			${if (theMonthAfter < 10) "0$theMonthAfter" else theMonthAfter}/
 			$year
-		""".trimIndent().trimMargin()
+		""".trimIndent()
+			.trimMargin()
+			.replace("\n", "")
 
 		// listener
 		(parentFragment as FragmentListener?)?.sendFromDatePickerFragment(date)

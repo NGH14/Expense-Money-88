@@ -14,7 +14,7 @@ class ResidentSearchFragment : DialogFragment(R.layout.fragment_resident_search)
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
 
-		setWidthPercent(85)
+		setWidthPercent()
 
 		fmResidentSearchButtonCancel.setOnClickListener { dismiss() }
 		fmResidentSearchButtonSearch.setOnClickListener { search() }
@@ -41,6 +41,7 @@ class ResidentSearchFragment : DialogFragment(R.layout.fragment_resident_search)
 		if (motionEvent.action != MotionEvent.ACTION_DOWN) return false
 
 		CalendarFragment().show(childFragmentManager, null)
+
 		return true
 	}
 

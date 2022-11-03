@@ -13,4 +13,5 @@
 		android:id="@+id/aboutUsFragment"
 		android:icon="@android:drawable/ic_dialog_info"
 		android:title="@string/menu_in_main_about" />
+
 </menu>

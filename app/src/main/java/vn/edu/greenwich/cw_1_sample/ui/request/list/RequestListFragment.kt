@@ -5,11 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.fragment_request_list.*
 import vn.edu.greenwich.cw_1_sample.R
 import vn.edu.greenwich.cw_1_sample.database.ResimaDAO
 import vn.edu.greenwich.cw_1_sample.models.Request
@@ -17,8 +16,6 @@ import vn.edu.greenwich.cw_1_sample.models.Request
 class RequestListFragment : Fragment(R.layout.fragment_request_list) {
 	private var _requestList = ArrayList<Request>()
 	private lateinit var _db: ResimaDAO
-	private lateinit var fmRequestListEmptyNotice: TextView
-	private lateinit var fmRequestListRecyclerView: RecyclerView
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
@@ -40,9 +37,6 @@ class RequestListFragment : Fragment(R.layout.fragment_request_list) {
 			_requestList = _db.getRequestList(request, null, false)
 		}
 
-		fmRequestListRecyclerView = view.findViewById(R.id.fmRequestListRecyclerView)
-		fmRequestListEmptyNotice = view.findViewById(R.id.fmRequestListEmptyNotice)
-
 		val linearLayoutManager = LinearLayoutManager(context)
 		val dividerItemDecoration = DividerItemDecoration(context, linearLayoutManager.orientation)
 
@@ -52,6 +46,7 @@ class RequestListFragment : Fragment(R.layout.fragment_request_list) {
 
 		// Show "No Request." message.
 		fmRequestListEmptyNotice.visibility = if (_requestList.isEmpty()) View.VISIBLE else View.GONE
+
 		return view
 	}
 

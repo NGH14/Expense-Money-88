@@ -12,9 +12,11 @@ class DeleteConfirmFragment(message: String) : DialogFragment(R.layout.fragment_
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		super.onCreateDialog(savedInstanceState)
 
-		return AlertDialog.Builder(context).setTitle(R.string.label_confirmation).setMessage(_message)
+		return AlertDialog.Builder(context)
 			.setNegativeButton(R.string.label_cancel) { _, _ -> dismiss() }
-			.setPositiveButton(R.string.label_confirm) { _, _ -> delete() }.create()
+			.setPositiveButton(R.string.label_confirm) { _, _ -> delete() }
+			.setTitle(R.string.label_confirmation)
+			.setMessage(_message).create()
 	}
 
 	private fun delete() {

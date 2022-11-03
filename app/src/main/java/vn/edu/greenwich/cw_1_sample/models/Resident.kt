@@ -6,7 +6,10 @@ data class Resident(
 	var startDate: String? = null,
 	var owner: Int = -1,
 ) : java.io.Serializable {
-	fun isEmpty(): Boolean = -1L == id && null == name && null == startDate && -1 == owner
+
+	fun isEmpty(): Boolean {
+		return -1L == id && null == name && null == startDate && -1 == owner
+	}
 
 	override fun toString(): String = "[$startDate] $name"
 }

@@ -48,7 +48,7 @@ class ResidentAdapter(var _originalList: ArrayList<Resident>) :
 		val tenant = holder.itemView.resources.getString(R.string.label_tenant)
 
 		holder.listItemResidentName.text = resident.name
-		holder.listItemResidentStartDate.text = resident.startDate
+		holder.listItemResidentStartDate.text = resident.startDate.toString().replace("\n", "")
 		holder.listItemResidentOwner.text = if (resident.owner == 1) owner else tenant
 	}
 
@@ -57,7 +57,7 @@ class ResidentAdapter(var _originalList: ArrayList<Resident>) :
 	override fun getFilter(): Filter = _itemFilter
 
 	inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-		protected var listItemResident: LinearLayout
+		private var _listItemResident: LinearLayout
 		var listItemResidentName: TextView
 		var listItemResidentStartDate: TextView
 		var listItemResidentOwner: TextView
@@ -66,11 +66,11 @@ class ResidentAdapter(var _originalList: ArrayList<Resident>) :
 			listItemResidentName = itemView.findViewById(R.id.listItemResidentName)
 			listItemResidentStartDate = itemView.findViewById(R.id.listItemResidentStartDate)
 			listItemResidentOwner = itemView.findViewById(R.id.listItemResidentOwner)
-			listItemResident = itemView.findViewById(R.id.listItemResident)
-			listItemResident.setOnClickListener(::showDetail)
+			_listItemResident = itemView.findViewById(R.id.listItemResident)
+			_listItemResident.setOnClickListener(::showDetail)
 		}
 
-		protected fun showDetail(view: View?) {
+		private fun showDetail(view: View?) {
 			val resident = _filteredList!![adapterPosition]
 			val bundle = Bundle()
 

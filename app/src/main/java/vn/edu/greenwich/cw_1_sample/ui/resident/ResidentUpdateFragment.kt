@@ -34,7 +34,6 @@ class ResidentUpdateFragment : Fragment(R.layout.fragment_resident_update), Resi
 	override fun sendFromResidentRegisterFragment(status: Long) {
 		when (status.toInt()) {
 			0 -> Toast.makeText(context, R.string.notification_update_fail, Toast.LENGTH_SHORT).show()
-
 			else -> {
 				Toast.makeText(context, R.string.notification_update_success, Toast.LENGTH_SHORT).show()
 				findNavController(requireView()).navigateUp()

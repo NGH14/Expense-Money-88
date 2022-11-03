@@ -13,9 +13,11 @@ import java.util.*
 class TimePickerFragment : DialogFragment(R.layout.fragment_time_picker), OnTimeSetListener {
 	override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 		super.onCreateDialog(savedInstanceState)
+
 		val calendar = Calendar.getInstance()
 		val hour = calendar[Calendar.HOUR_OF_DAY]
 		val minute = calendar[Calendar.MINUTE]
+
 		return TimePickerDialog(activity, this, hour, minute, DateFormat.is24HourFormat(activity))
 	}
 
@@ -23,7 +25,9 @@ class TimePickerFragment : DialogFragment(R.layout.fragment_time_picker), OnTime
 		val time = """
 			${if (hour < 10) "0$hour" else hour}:
 			${if (minute < 10) "0$minute" else minute}
-		""".trimIndent().trimMargin()
+		""".trimIndent()
+			.trimMargin()
+			.replace("\n", "")
 
 		(parentFragment as FragmentListener?)?.sendFromTimePickerFragment(time)
 		dismiss()

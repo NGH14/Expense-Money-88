@@ -2,18 +2,13 @@ package vn.edu.greenwich.cw_1_sample.ui.resident
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentContainerView
 import androidx.navigation.Navigation.findNavController
-import com.google.android.material.bottomappbar.BottomAppBar
+import kotlinx.android.synthetic.main.fragment_resident_detail.*
 import vn.edu.greenwich.cw_1_sample.R
 import vn.edu.greenwich.cw_1_sample.database.ResimaDAO
 import vn.edu.greenwich.cw_1_sample.models.Request
@@ -30,12 +25,6 @@ class ResidentDetailFragment :
 
 	private lateinit var _db: ResimaDAO
 	private var _resident: Resident? = null
-	private lateinit var fmResidentDetailRequestButton: Button
-	private lateinit var fmResidentDetailBottomAppBar: BottomAppBar
-	private lateinit var fmResidentDetailRequestList: FragmentContainerView
-	private lateinit var fmResidentDetailName: TextView
-	private lateinit var fmResidentDetailStartDate: TextView
-	private lateinit var fmResidentDetailOwner: TextView
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
@@ -43,29 +32,14 @@ class ResidentDetailFragment :
 		_db = ResimaDAO(getContext())
 	}
 
-	override fun onCreateView(
-		inflater: LayoutInflater,
-		container: ViewGroup?,
-		savedInstanceState: Bundle?,
-	): View {
-		val view = inflater.inflate(R.layout.fragment_resident_detail, container, false)
+	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+		super.onViewCreated(view, savedInstanceState)
 
-		fmResidentDetailName = view.findViewById(R.id.fmResidentDetailName)
-		fmResidentDetailStartDate = view.findViewById(R.id.fmResidentDetailStartDate)
-		fmResidentDetailOwner = view.findViewById(R.id.fmResidentDetailOwner)
-
-		fmResidentDetailBottomAppBar = view.findViewById(R.id.fmResidentDetailBottomAppBar)
 		fmResidentDetailBottomAppBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener(::menuItemSelected))
-
-		fmResidentDetailRequestButton = view.findViewById(R.id.fmResidentDetailRequestButton)
 		fmResidentDetailRequestButton.setOnClickListener { showAddRequestFragment() }
-
-		fmResidentDetailRequestList = view.findViewById(R.id.fmResidentDetailRequestList)
 
 		showDetails()
 		showRequestList()
-
-		return view
 	}
 
 	private fun showDetails() {
@@ -88,13 +62,13 @@ class ResidentDetailFragment :
 	}
 
 	private fun showRequestList() {
-		if (arguments != null) {
-			val bundle = Bundle()
-			bundle.putSerializable(RequestListFragment.ARG_PARAM_RESIDENT_ID, _resident?.id)
+		if (arguments != null) return
 
-			// Send arguments (resident id) to RequestListFragment.
-			childFragmentManager.fragments[0].arguments = bundle
-		}
+		val bundle = Bundle()
+		bundle.putSerializable(RequestListFragment.ARG_PARAM_RESIDENT_ID, _resident?.id)
+
+		// Send arguments (resident id) to RequestListFragment.
+		childFragmentManager.fragments[0].arguments = bundle
 	}
 
 	private fun menuItemSelected(item: MenuItem): Boolean {
@@ -102,6 +76,7 @@ class ResidentDetailFragment :
 			R.id.residentUpdateFragment -> showUpdateFragment()
 			R.id.residentDeleteFragment -> showDeleteConfirmFragment()
 		}
+
 		return true
 	}
 
@@ -124,15 +99,11 @@ class ResidentDetailFragment :
 	}
 
 	override fun sendFromDeleteConfirmFragment(status: Int) {
-		if (status == 1 && _resident?.id != null) {
-			val numOfDeletedRows = _db.deleteResident(_resident!!.id)
+		if (status == 1 && _resident?.id != null && _db.deleteResident(_resident!!.id) > 0) {
+			Toast.makeText(context, R.string.notification_delete_success, Toast.LENGTH_SHORT).show()
+			view?.let { findNavController(it).navigateUp() }
 
-			if (numOfDeletedRows > 0) {
-				Toast.makeText(context, R.string.notification_delete_success, Toast.LENGTH_SHORT).show()
-				view?.let { findNavController(it).navigateUp() }
-
-				return
-			}
+			return
 		}
 
 		Toast.makeText(context, R.string.notification_delete_fail, Toast.LENGTH_SHORT).show()
@@ -144,7 +115,6 @@ class ResidentDetailFragment :
 		_resident?.id?.let { request.residentId = it }
 
 		val id = _db.insertRequest(request)
-
 		val text = if (id == -1L) R.string.notification_create_fail else R.string.notification_create_success
 		Toast.makeText(context, text, Toast.LENGTH_SHORT).show()
 
@@ -155,10 +125,8 @@ class ResidentDetailFragment :
 		val bundle = Bundle()
 
 		bundle.putSerializable(RequestListFragment.ARG_PARAM_RESIDENT_ID, _resident?.id)
-		childFragmentManager.beginTransaction()
-			.setReorderingAllowed(true)
-			.replace(R.id.fmResidentDetailRequestList, RequestListFragment::class.java, bundle)
-			.commit()
+		childFragmentManager.beginTransaction().setReorderingAllowed(true)
+			.replace(R.id.fmResidentDetailRequestList, RequestListFragment::class.java, bundle).commit()
 	}
 
 	companion object {

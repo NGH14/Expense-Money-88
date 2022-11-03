@@ -1,7 +1,6 @@
 package vn.edu.greenwich.cw_1_sample
 
 import android.os.Build
-import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -20,11 +19,11 @@ class SettingActivity : AppCompatActivity(R.layout.activity_setting) {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
+		_db = ResimaDAO(this)
+
 		setTitle(R.string.label_setting)
 
-		supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
-		_db = ResimaDAO(this)
+		supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
 		settingBackup.setOnClickListener { backup() }
 		settingResetDatabase.setOnClickListener { resetDatabase() }
@@ -34,12 +33,12 @@ class SettingActivity : AppCompatActivity(R.layout.activity_setting) {
 		val residents = _db.getResidentList(null, null, false)
 		val requests = _db.getRequestList(null, null, false)
 
-		if (residents.size > 0 && requests.size > 0) {
+		if (residents.isNotEmpty() && requests.isNotEmpty()) {
 			val deviceName =
 				"${Build.MANUFACTURER} " +
 					"${Build.MODEL} " +
 					"${Build.VERSION.RELEASE} " +
-					VERSION_CODES::class.java.fields[Build.VERSION.SDK_INT].name
+					Build.VERSION_CODES::class.java.fields[Build.VERSION.SDK_INT].name
 			val backup = Backup(Date(), deviceName, residents, requests)
 
 			FirebaseFirestore.getInstance()
@@ -53,7 +52,10 @@ class SettingActivity : AppCompatActivity(R.layout.activity_setting) {
 					Toast.makeText(this, R.string.notification_backup_fail, Toast.LENGTH_SHORT).show()
 					e.printStackTrace()
 				}
-		} else Toast.makeText(this, R.string.error_empty_list, Toast.LENGTH_SHORT).show()
+
+			return
+		}
+		Toast.makeText(this, R.string.error_empty_list, Toast.LENGTH_SHORT).show()
 	}
 
 	private fun resetDatabase() {

@@ -10,7 +10,7 @@ import androidx.fragment.app.DialogFragment
  * the width of the dialog to a percentage of the current
  * screen width.
  */
-fun DialogFragment.setWidthPercent(percentage: Int) {
+fun DialogFragment.setWidthPercent(percentage: Int = 85) {
 	val percent = percentage.toFloat() / 100
 	val dm = Resources.getSystem().displayMetrics
 	val rect = dm.run { Rect(0, 0, widthPixels, heightPixels) }

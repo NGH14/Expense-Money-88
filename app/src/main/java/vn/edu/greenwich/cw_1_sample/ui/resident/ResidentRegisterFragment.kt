@@ -20,7 +20,7 @@ open class ResidentRegisterFragment :
 	ResidentRegisterConfirmFragment.FragmentListener,
 	CalendarFragment.FragmentListener {
 
-	private var _db: ResimaDAO? = null
+	private lateinit var _db: ResimaDAO
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
@@ -34,6 +34,10 @@ open class ResidentRegisterFragment :
 		// Show Calendar for choosing a date.
 		fmResidentRegisterStartDate.setOnTouchListener(fun(_: View, event: MotionEvent): Boolean = showCalendar(event))
 
+		// Create new resident.
+		fmResidentRegisterButton.setOnClickListener { register() }
+
+		// what's this for ?
 		// Update current resident.
 		if (arguments != null) {
 			val resident = requireArguments().serializable<Resident>(ARG_PARAM_RESIDENT)
@@ -45,9 +49,6 @@ open class ResidentRegisterFragment :
 
 			resident?.id?.run { fmResidentRegisterButton.setOnClickListener { update(this) } }
 		}
-
-		// Create new resident.
-		fmResidentRegisterButton.setOnClickListener { register() }
 	}
 
 	private fun register() {
@@ -60,9 +61,9 @@ open class ResidentRegisterFragment :
 	private fun update(id: Long) {
 		if (isValidForm()) {
 			val resident = getResidentFromInput(id)
-			val status = _db?.updateResident(resident)
+			val status = _db.updateResident(resident)
 
-			status?.let { (parentFragment as FragmentListener?)?.sendFromResidentRegisterFragment(it) }
+			status.let { (parentFragment as FragmentListener?)?.sendFromResidentRegisterFragment(it) }
 
 			return
 		}

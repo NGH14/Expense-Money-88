@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
@@ -14,14 +13,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(R.layout.activity_main) {
 	private lateinit var appBarConfiguration: AppBarConfiguration
-	private lateinit var navHostFragment: NavHostFragment
-	private lateinit var navController: NavController
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 
-		navHostFragment = main_nav_host.getFragment()
-		navController = navHostFragment.navController
+		val navHostFragment = main_nav_host.getFragment<NavHostFragment>()
+		val navController = navHostFragment.navController
 
 		appBarConfiguration = AppBarConfiguration.Builder(
 			R.id.residentListFragment,
