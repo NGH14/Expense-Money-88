@@ -6,12 +6,6 @@
 	app:startDestination="@id/residentListFragment">
 
 	<fragment
-		android:id="@+id/residentRegisterFragment"
-		android:name="vn.edu.greenwich.cw_1_sample.ui.resident.ResidentRegisterFragment"
-		android:label="Resident Registration"
-		tools:layout="@layout/fragment_resident_register" />
-
-	<fragment
 		android:id="@+id/residentListFragment"
 		android:name="vn.edu.greenwich.cw_1_sample.ui.resident.list.ResidentListFragment"
 		android:label="Resident List"
@@ -32,6 +26,12 @@
 		android:name="vn.edu.greenwich.cw_1_sample.ui.info.AboutUsFragment"
 		android:label="About Us"
 		tools:layout="@layout/fragment_about_us" />
+
+	<fragment
+		android:id="@+id/testFragment"
+		android:name="vn.edu.greenwich.cw_1_sample.ui.SettingFragment"
+		android:label="Settings"
+		tools:layout="@layout/fragment_test" />
 
 	<fragment
 		android:id="@+id/residentUpdateFragment"

@@ -1,10 +1,8 @@
 package vn.edu.greenwich.cw_1_sample.ui.request
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_request_create.*
@@ -22,6 +20,7 @@ class RequestCreateFragment(residentId: Long? = null) :
 
 	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 		super.onViewCreated(view, savedInstanceState)
+		setTypeSpinner()
 
 		fmRequestCreateButtonAdd.setOnClickListener { createRequest() }
 		fmRequestCreateButtonCancel.setOnClickListener { dismiss() }
@@ -31,18 +30,6 @@ class RequestCreateFragment(residentId: Long? = null) :
 		fmRequestCreateTime.setOnTouchListener(fun(_: View?, motionEvent: MotionEvent): Boolean {
 			return showTimeDialog(motionEvent)
 		})
-	}
-
-	override fun onCreateView(
-		inflater: LayoutInflater,
-		container: ViewGroup?,
-		savedInstanceState: Bundle?,
-	): View {
-		val view: View = inflater.inflate(appR.layout.fragment_request_create, container, false)
-
-		setTypeSpinner()
-
-		return view
 	}
 
 	override fun sendFromDatePickerFragment(date: String?) = fmRequestCreateDate.setText(date)

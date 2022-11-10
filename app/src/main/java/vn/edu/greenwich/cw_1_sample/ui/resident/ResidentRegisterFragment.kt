@@ -4,23 +4,30 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.LinearLayout
+import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_resident_register.*
 import vn.edu.greenwich.cw_1_sample.R
 import vn.edu.greenwich.cw_1_sample.database.ResimaDAO
 import vn.edu.greenwich.cw_1_sample.models.Resident
 import vn.edu.greenwich.cw_1_sample.ui.dialog.CalendarFragment
+import vn.edu.greenwich.cw_1_sample.ui.resident.list.ResidentListFragment
 import vn.edu.greenwich.cw_1_sample.utils.serializable
+import vn.edu.greenwich.cw_1_sample.utils.setWidthPercent
 
 open class ResidentRegisterFragment :
-	Fragment(R.layout.fragment_resident_register),
+	DialogFragment(R.layout.fragment_resident_register),
 	ResidentRegisterConfirmFragment.FragmentListener,
 	CalendarFragment.FragmentListener {
 
 	private lateinit var _db: ResimaDAO
+
+	override fun onResume() {
+		super.onResume()
+
+		setWidthPercent()
+	}
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
@@ -52,7 +59,7 @@ open class ResidentRegisterFragment :
 	}
 
 	private fun register() {
-		if (!isValidForm()) return moveButton()
+		if (!isValidForm()) return
 
 		val resident = getResidentFromInput(-1)
 		ResidentRegisterConfirmFragment(resident).show(childFragmentManager, null)
@@ -67,7 +74,6 @@ open class ResidentRegisterFragment :
 
 			return
 		}
-		moveButton()
 	}
 
 	private fun showCalendar(event: MotionEvent): Boolean {
@@ -87,34 +93,22 @@ open class ResidentRegisterFragment :
 
 	private fun isValidForm(): Boolean {
 		val name = fmResidentRegisterName.text.toString()
-		val startDate = fmResidentRegisterStartDate.text.toString()
-		var error = ""
+		val date = fmResidentRegisterStartDate.text.toString()
+		val errors = mutableListOf<String>()
 
-		if (name.trim { it <= ' ' }.isEmpty()) {
-			error += "* ${getString(R.string.error_blank_name)}"
-			return false
+		if (name.none { !it.isWhitespace() }) errors.add(getString(R.string.error_blank_name))
+		if (date.none { !it.isWhitespace() }) errors.add(getString(R.string.error_blank_start_date))
+
+		val isValid: Boolean = errors.isEmpty()
+
+		fmResidentRegisterError.visibility = if (isValid) View.GONE else View.VISIBLE
+
+		if (!isValid) {
+			val res = android.R.layout.simple_list_item_1
+			fmResidentRegisterError.adapter = ArrayAdapter(requireContext(), res, errors)
 		}
-		if (startDate.trim { it <= ' ' }.isEmpty()) {
-			error += "* ${getString(R.string.error_blank_start_date)}"
-			return false
-		}
 
-		fmResidentRegisterError.text = error
-
-		return true
-	}
-
-	private fun moveButton() {
-		val registerLayout = fmResidentRegisterLinearLayout
-		val btnParams = fmResidentRegisterButton.layoutParams as LinearLayout.LayoutParams
-		val layoutLeftPadding = registerLayout.paddingLeft
-		val layoutRightPadding = registerLayout.paddingRight
-		val layoutWidth = registerLayout.width - layoutLeftPadding - layoutRightPadding
-
-		btnParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-		btnParams.topMargin += fmResidentRegisterButton.height
-		btnParams.leftMargin = if (btnParams.leftMargin == 0) layoutWidth - fmResidentRegisterButton.width else 0
-		fmResidentRegisterButton.layoutParams = btnParams
+		return isValid
 	}
 
 	override fun sendFromResidentRegisterConfirmFragment(status: Long) {
@@ -126,6 +120,9 @@ open class ResidentRegisterFragment :
 			fmResidentRegisterStartDate.setText("")
 			fmResidentRegisterName.requestFocus()
 		}
+		(requireParentFragment() as ResidentListFragment)
+			.reloadList(null)
+		dismiss()
 	}
 
 	override fun sendFromCalendarFragment(date: String?) = fmResidentRegisterStartDate.setText(date)

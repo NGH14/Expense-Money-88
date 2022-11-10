@@ -9,4 +9,11 @@
     <option name="ignoreWarnings" value="false" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.27447916666666666" />
+      </ProjectState>
+    </option>
+  </component>
 </project>

@@ -1,6 +1,5 @@
 package vn.edu.greenwich.cw_1_sample
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -22,8 +21,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 
 		appBarConfiguration = AppBarConfiguration.Builder(
 			R.id.residentListFragment,
-			R.id.residentRegisterFragment,
-			R.id.aboutUsFragment
+			R.id.aboutUsFragment,
+			R.id.testFragment
 		).build()
 
 		setupWithNavController(main_nav_bottom, navController)
@@ -38,10 +37,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_main) {
 	override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
 		android.R.id.home -> {
 			onBackPressedDispatcher.onBackPressed()
-			true
-		}
-		R.id.setting -> {
-			startActivity(Intent(this, SettingActivity::class.java))
 			true
 		}
 		else -> super.onOptionsItemSelected(item)

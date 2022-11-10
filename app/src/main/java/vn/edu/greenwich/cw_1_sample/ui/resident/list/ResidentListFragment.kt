@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -12,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_resident_list.*
 import vn.edu.greenwich.cw_1_sample.R
 import vn.edu.greenwich.cw_1_sample.database.ResimaDAO
 import vn.edu.greenwich.cw_1_sample.models.Resident
+import vn.edu.greenwich.cw_1_sample.ui.resident.ResidentRegisterFragment
 import vn.edu.greenwich.cw_1_sample.ui.resident.ResidentSearchFragment
 
 class ResidentListFragment : Fragment(R.layout.fragment_resident_list), ResidentSearchFragment.FragmentListener {
@@ -21,7 +23,6 @@ class ResidentListFragment : Fragment(R.layout.fragment_resident_list), Resident
 
 	override fun onAttach(context: Context) {
 		super.onAttach(context)
-
 		_db = ResimaDAO(context)
 	}
 
@@ -39,19 +40,31 @@ class ResidentListFragment : Fragment(R.layout.fragment_resident_list), Resident
 		fmResidentListButtonResetSearch.setOnClickListener { resetSearch() }
 		fmResidentListButtonSearch.setOnClickListener { showSearchDialog() }
 		fmResidentListFilter.addTextChangedListener(filter())
+
+		fmResidentListFilter.setOnKeyListener { v, keyCode, event ->
+			if (event.action == KeyEvent.ACTION_DOWN) {
+				when (keyCode) {
+					KeyEvent.KEYCODE_ENTER -> filter()
+				}
+			}
+
+			true
+		}
+
+		btn_resident_add.setOnClickListener {
+			showRegisterResidentDialog()
+		}
 	}
 
 	override fun onResume() {
-		super.onResume()
-
 		reloadList(null)
+		super.onResume()
 	}
 
-	private fun reloadList(resident: Resident?) {
+	fun reloadList(resident: Resident?) {
 		_db.let { residentList = it.getResidentList(resident, null, false) }
 		residentAdapter.updateList(residentList)
-
-		// Show "No Resident." message.
+		fmResidentListRecyclerView.visibility = if (residentList.isNotEmpty()) View.VISIBLE else View.GONE
 		fmResidentListEmptyNotice.visibility = if (residentList.isEmpty()) View.VISIBLE else View.GONE
 	}
 
@@ -61,6 +74,7 @@ class ResidentListFragment : Fragment(R.layout.fragment_resident_list), Resident
 			override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, count: Int) {
 				residentAdapter.filter.filter(charSequence.toString())
 			}
+
 			override fun afterTextChanged(editable: Editable) {}
 		}
 	}
@@ -76,5 +90,11 @@ class ResidentListFragment : Fragment(R.layout.fragment_resident_list), Resident
 
 	override fun sendFromResidentSearchFragment(resident: Resident?) {
 		reloadList(if (resident?.isEmpty() == false) resident else null)
+	}
+
+	private fun showRegisterResidentDialog() {
+		val residentRegisterDialog = ResidentRegisterFragment()
+
+		residentRegisterDialog.show(childFragmentManager, null)
 	}
 }
